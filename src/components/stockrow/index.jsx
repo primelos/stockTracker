@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { iex } from '../../config/iex'
+import { stock } from '../../resources/stock'
+
 require('dotenv').config()
 
 
@@ -10,21 +11,19 @@ class StockRow extends Component {
            data: {}
         }
     }
-
-    componentDidMount() {
-        const url = `${iex.baseUrl}/stock/${this.props.ticker}/intraday-prices?chartLast=1&token=${iex.my_token}`
-        fetch(url)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data)
-                this.setState({
-                    data: data
-                })
+    applyData(data) {
+        this.setState({
+            data: data
         })
     }
 
+    componentDidMount() {
+            stock.latestPrice(this.props.ticker, this.applyData.bind(this))
+            
+    }
+
     render() {
-        // console.log(iex.my_token);
+        console.log(this.state.data);
         const { ticker } = this.props
         const { price, date, time } = this.state.data
         return (
